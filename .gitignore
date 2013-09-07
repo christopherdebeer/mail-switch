@@ -8,6 +8,10 @@
 *.pid
 *.gz
 
+*.swp
+*.swo
+*~
+
 node_modules
 pids
 logs

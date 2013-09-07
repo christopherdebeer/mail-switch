@@ -7,7 +7,7 @@ var express = require('express');
 var routes = require('./routes');
 var http = require('http');
 var path = require('path');
-var mandrill = require('node-mandrill')('t3ZED7xnxF0qDxk6Pifzsg');
+var mandrill = require('node-mandrill')(process.env.MANDRILL_API_KEY);
 _ = require('underscore')
 var app = express();
 

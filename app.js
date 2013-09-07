@@ -33,7 +33,11 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/mail', routes.mail)
 app.post('/mail', mail_switch({
-	'detours@0circle.co.uk': 'christopherdebeer+detoursapp@gmail.com'
+	map: {
+		'detours@0circle.co.uk': 'christopherdebeer+detoursapp@gmail.com'
+	},
+	default: function(address) {return "christopherdebeer+" + address.split('@')[0] + "@gmail.com"},
+	redis_prefix: "mail-switch_"
 }));
 
 http.createServer(app).listen(app.get('port'), function(){

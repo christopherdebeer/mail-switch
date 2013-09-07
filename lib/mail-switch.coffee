@@ -13,11 +13,16 @@ handleRequest = (req, res) ->
 		res.send 405
 	for event in events
 		break unless event.event is 'inbound'
+
+		toName = ''
+		for person in event.msg.to
+			toName = person[1] if person.name = event.msg.email
+
 		console.log 'Getting forwarding address...'
-		getForward event.msg.email, options[event.msg.email], (forwardTo) ->
+		getForward event.msg.email, options.map[event.msg.email], (forwardTo) ->
 			console.log "Sending to: #{forwardTo}"
 			message =
-				to: [ email: forwardTo, name: 'Christopher de Beer' ]
+				to: [ email: forwardTo, name: toName ]
 				from_email: event.msg.from_email
 				subject: event.msg.subject
 				text: event.msg.text
@@ -32,9 +37,9 @@ handleRequest = (req, res) ->
 
 getForward = ( address, overide, callback ) ->
 	unless overide
-		default_forward = "christopherdebeer+#{ address.split('@')[0] }@gmail.com"
+		default_forward = options.default( address )
 		console.log 'Checking redis for forwarding address...'
-		rclient.get "mail-switch_#{address}", (err, res) ->
+		rclient.get "#{options.redis_prefix}#{address}", (err, res) ->
 			forward = if res and not err
 				res
 			else
@@ -46,7 +51,9 @@ getForward = ( address, overide, callback ) ->
 		callback overide
 
  
-module.exports = (opts = {}) ->
-	options = opts
+module.exports = (opts) ->
+	options.map = opts.map || {}
+	options.default = opts.default || -> "example@example.com"
+	options.redis_prefix = opts.redis_prefix || "mail-switch_"
 	handleRequest
 	

@@ -56,5 +56,5 @@ module.exports = (opts) ->
     options.redis_prefix = opts.redis_prefix || "mail-switch_"
     options.redis_host = opts.redis_host || "127.0.0.1"
     options.redis_port = opts.redis_port || 6379
-    rclient = redis.createClient( options.redis-port, options.redis-host )
+    rclient = redis.createClient( options.redis_port, options.redis_host )
     handleRequest

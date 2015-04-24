@@ -4,7 +4,10 @@
  */
 
 require("coffee-script")
-if (!process.env.MANDRILL_API_KEY) process.exit(1);
+if (!process.env.MANDRILL_API_KEY) {
+    throw new Error( "MANDRILL_API_KEY was not set." );
+    process.exit(1);
+}
 
 
 var express = require('express');

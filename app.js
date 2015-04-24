@@ -28,13 +28,15 @@ if ('development' == app.get('env')) {
 
 app.get('/mail', function(req,res){ res.status(200).send('ok'); });
 app.post('/mail', mail_switch({
-	map: {
-		'detours@0circle.co.uk': 'christopherdebeer+detoursapp@gmail.com'
-	},
-	default: function(address) {return "christopherdebeer+" + address.split('@')[0] + "@gmail.com"},
-	redis_prefix: "mail-switch_"
+    map: {
+        'detours@0circle.co.uk': 'christopherdebeer+detoursapp@gmail.com'
+    },
+    default: function(address) {return "christopherdebeer+" + address.split('@')[0] + "@gmail.com"},
+    redis_prefix: "mail-switch_",
+    redis_host: process.env.REDIS_PORT_6379_TCP_PORT,
+    redis_port: process.env.REDIS_PORT_6379_TCP_ADDR
 }));
 
 http.createServer(app).listen(app.get('port'), function(){
-  console.log('Email forwarding server listening on port ' + app.get('port'));
+    console.log('Email forwarding server listening on port ' + app.get('port'));
 });

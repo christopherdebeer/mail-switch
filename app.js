@@ -5,11 +5,14 @@
 
 require("coffee-script").register();
 
-if (!process.env.MANDRILL_API_KEY) {
+config = require( './config.json' );
+
+if (!config.MANDRILL_API_KEY) {
     throw new Error( "MANDRILL_API_KEY was not set." );
     process.exit(1);
 }
 
+console.log( "MANDRILL_API_KEY", config.MANDRILL_API_KEY );
 console.log( "REDIS_PORT_6379_TCP_ADDR", process.env.REDIS_PORT_6379_TCP_ADDR );
 console.log( "REDIS_PORT_6379_TCP_PORT", process.env.REDIS_PORT_6379_TCP_PORT );
 
@@ -41,7 +44,8 @@ app.post('/mail', mail_switch({
     default: function(address) {return "christopherdebeer+" + address.split('@')[0] + "@gmail.com"},
     redis_prefix: "mail-switch_",
     redis_host: process.env.REDIS_PORT_6379_TCP_ADDR,
-    redis_port: process.env.REDIS_PORT_6379_TCP_PORT
+    redis_port: process.env.REDIS_PORT_6379_TCP_PORT,
+    mandrill_api_key: config.MANDRILL_API_KEY
 }));
 
 http.createServer(app).listen(app.get('port'), function(){

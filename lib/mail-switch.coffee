@@ -1,7 +1,7 @@
 
-mandrill = require( 'node-mandrill' )( process.env.MANDRILL_API_KEY )
 redis = require 'redis'
 rclient = null
+mandrill = null
 
 options = {}
 handleRequest = (req, res) ->
@@ -56,5 +56,6 @@ module.exports = (opts) ->
     options.redis_prefix = opts.redis_prefix || "mail-switch_"
     options.redis_host = opts.redis_host || "127.0.0.1"
     options.redis_port = opts.redis_port || 6379
+    mandrill = require( 'node-mandrill' )( opts.mandrill_api_key )
     rclient = redis.createClient( options.redis_port, options.redis_host )
     handleRequest

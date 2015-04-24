@@ -3,12 +3,15 @@
  * Module dependencies.
  */
 
-require("coffee-script")
+require("coffee-script").register();
+
 if (!process.env.MANDRILL_API_KEY) {
     throw new Error( "MANDRILL_API_KEY was not set." );
     process.exit(1);
 }
 
+console.log( "REDIS_PORT_6379_TCP_ADDR", process.env.REDIS_PORT_6379_TCP_ADDR );
+console.log( "REDIS_PORT_6379_TCP_PORT", process.env.REDIS_PORT_6379_TCP_PORT );
 
 var express = require('express');
 var http = require('http');
@@ -29,6 +32,7 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+app.get( '/', function(req,res){ res.status(200).send('hi :)'); });
 app.get('/mail', function(req,res){ res.status(200).send('ok'); });
 app.post('/mail', mail_switch({
     map: {
@@ -36,8 +40,8 @@ app.post('/mail', mail_switch({
     },
     default: function(address) {return "christopherdebeer+" + address.split('@')[0] + "@gmail.com"},
     redis_prefix: "mail-switch_",
-    redis_host: process.env.REDIS_PORT_6379_TCP_PORT,
-    redis_port: process.env.REDIS_PORT_6379_TCP_ADDR
+    redis_host: process.env.REDIS_PORT_6379_TCP_ADDR,
+    redis_port: process.env.REDIS_PORT_6379_TCP_PORT
 }));
 
 http.createServer(app).listen(app.get('port'), function(){
